@@ -1,0 +1,162 @@
+"beta_testv2_sürümü.html"
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siber Yapay Zeka - Beta Test Sürümü</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            /* 🌍 Tüm dünyada tık diye açılması için harika bir siber arka plan resmi gömdüm */
+            background: url('https://unsplash.com') no-repeat center center fixed; 
+            background-size: cover;
+            display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; 
+            flex-direction: column; gap: 15px;
+        }
+        .chat-container { 
+            width: 90%; max-width: 450px; height: 65vh; background: rgba(20, 20, 30, 0.85); 
+            backdrop-filter: blur(10px); border-radius: 16px; 
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.3); border: 1px solid rgba(0, 242, 254, 0.2);
+            overflow: hidden; display: flex; flex-direction: column; 
+        }
+        .chat-header { 
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: #000; 
+            padding: 12px; text-align: center; font-size: 1.1rem; font-weight: bold; 
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .music-btn {
+            background: #000; color: #00f2fe; border: 1px solid #00f2fe;
+            padding: 4px 10px; border-radius: 20px; cursor: pointer; font-size: 0.75rem; font-weight: bold;
+        }
+        .chat-box { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .message { padding: 10px 14px; border-radius: 18px; max-width: 80%; word-wrap: break-word; font-size: 0.9rem; }
+        .user { background: #4facfe; color: black; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .bot { background: rgba(255, 255, 255, 0.1); color: #fff; align-self: flex-start; border-bottom-left-radius: 2px; white-space: pre-wrap; }
+        .bot img { width: 100%; border-radius: 10px; margin-top: 5px; box-shadow: 0 0 10px rgba(0,242,254,0.5); }
+        
+        /* 👁️ Yazı kutusu küçük ve şık */
+        .input-area { display: flex; padding: 10px 15px; background: rgba(10, 10, 15, 0.95); border-top: 1px solid rgba(255,255,255,0.1); align-items: center; }
+        input { flex: 1; padding: 8px 15px; background: rgba(255,255,255,0.05); border: 1px solid rgba(0, 242, 254, 0.4); border-radius: 20px; outline: none; color: #fff; font-size: 0.85rem; }
+        button { background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%); color: black; border: none; padding: 8px 18px; margin-left: 8px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 0.85rem; }
+
+        .debug-panel {
+            width: 90%; max-width: 450px; background: rgba(0, 0, 0, 0.9); border: 1px solid #ff3333;
+            border-radius: 8px; color: #ff3333; font-family: monospace; font-size: 0.75rem; padding: 10px;
+            box-shadow: 0 0 15px rgba(255, 51, 51, 0.2);
+        }
+        .debug-header { font-weight: bold; border-bottom: 1px solid #ff3333; padding-bottom: 5px; margin-bottom: 5px; display: flex; justify-content: space-between; }
+        .debug-logs { max-height: 60px; overflow-y: auto; color: #00ff00; }
+    </style>
+</head>
+<body>
+
+<!-- 🎵 Arkada çalacak olan harika fon müziğini de doğrudan içine gömdüm -->
+<audio id="bgMusic" loop><source src="https://soundhelix.com" type="audio/mpeg"></audio>
+
+<div class="chat-container">
+    <div class="chat-header">
+        <span>🤖 Beta Sürümü v3.0</span>
+        <button class="music-btn" onclick="toggleMusic()" id="musicBtn">🎵 Müzik: KAPALI</button>
+    </div>
+    <div class="chat-box" id="chatBox">
+        <div class="message bot">Beta v3.0 Aktif! Resim çizdirmek için cümlenin başına "çiz" yaz. Cevapları sesli okuyabilirim!</div>
+    </div>
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Mesaj yaz veya 'çiz siber robot' de..." onkeypress="handleKeyPress(event)">
+        <button onclick="mesajGonder()">GÖNDER</button>
+    </div>
+</div>
+
+<div class="debug-panel">
+    <div class="debug-header">
+        <span>⚙️ BULUT ENTEGRASYONLU HATA BULUCU</span>
+    </div>
+    <div class="debug-logs" id="debugLogs">
+        [Sistem] Audio (Ses) ve Images (Resim) özellikleri aktif.<br>
+        [Sistem] 15 Gönüllü test kullanıcısı için siber ağ hazır.
+    </div>
+</div>
+
+<script>
+    // 🔑 BURAYA GOOGLE AI STUDIO API ANAHTARINI KOPYALA
+    const API_KEY = "BURAYA_API_ANAHTARINIZI_YAZIN"; 
+    const API_URL = `https://googleapis.com{API_KEY}`;
+
+    function logEkle(mesaj) {
+        const logs = document.getElementById("debugLogs");
+        logs.innerHTML += `<br><span>[BİLGİ] ${mesaj}</span>`;
+        logs.scrollTop = logs.scrollHeight;
+    }
+
+    function toggleMusic() {
+        const music = document.getElementById("bgMusic");
+        const btn = document.getElementById("musicBtn");
+        if (music.paused) {
+            music.play().then(() => logEkle("Müzik başladı.")).catch(err => logEkle("Müzik hatası!"));
+            btn.innerText = "🎵 Müzik: AÇIK";
+        } else {
+            music.pause(); btn.innerText = "🎵 Müzik: KAPALI";
+        }
+    }
+
+    // 🎙️ SESLİ OKUMA MOTORU (AUDIO)
+    function sesliOku(metin) {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const ses = new SpeechSynthesisUtterance(metin);
+            ses.lang = 'tr-TR';
+            window.speechSynthesis.speak(ses);
+        }
+    }
+
+    function handleKeyPress(e) { if (e.key === 'Enter') mesajGonder(); }
+
+    async function mesajGonder() {
+        const inputField = document.getElementById("userInput");
+        const chatBox = document.getElementById("chatBox");
+        let text = inputField.value.trim();
+        if (!text) return;
+
+        chatBox.innerHTML += `<div class="message user">${text}</div>`;
+        inputField.value = "";
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        const loadingId = "loading-" + Date.now();
+        chatBox.innerHTML += `<div class="message bot" id="${loadingId}">İşlem yapılıyor...</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        // 🎨 RESİM ÇİZME MOTORU (IMAGES)
+        if (text.toLowerCase().startsWith("çiz ")) {
+            const resimMetni = encodeURIComponent(text.substring(4));
+            const resimUrl = `https://pollinations.ai{resimMetni}?width=500&height=500&nologo=true`;
+            document.getElementById(loadingId).innerHTML = `İşte resmin adamım: <br><img src="${resimUrl}">`;
+            sesliOku("İşte istediğin resmi çizdim adamım.");
+            return;
+        }
+
+        if (API_KEY === "AIzaSyAmvT4MRbexQ-eMDzUY2O69WhtVG_aneE0") {
+            logEkle("Hata: API anahtarı boş!");
+            alert("Lütfen önce kodun içine Google AI Studio anahtarını yapıştır!");
+            return;
+        }
+
+        try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
+            });
+            const data = await response.json();
+            const botCevap = data.candidates.content.parts.text;
+            document.getElementById(loadingId).innerText = botCevap;
+            sesliOku(botCevap);
+        } catch (error) {
+            document.getElementById(loadingId).innerText = "Bağlantı hatası!";
+        }
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+</script>
+</body>
+</html>
